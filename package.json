@@ -1,0 +1,15 @@
+{
+  "name": "pygpt2",
+  "description": "Pretend You're GPT-2 Discord bot",
+  "version": "1.0.0",
+  "keywords": [
+    "discord",
+    "bot",
+    "game"
+  ],
+  "dependencies": {
+    "discord.js": "^11.4.2",
+    "dotenv": "^8.0.0",
+    "n-readlines": "^1.0.0"
+  }
+}
