@@ -102,8 +102,10 @@ class Game
       console.log(`Trying ${line.id} (on line ${chosenPromptIndex}): "${line.text.substring(0, 40)}..."`);
       this.gptsCompletion = Utils.sensibleCut(fullText, config.rules.minCompletionLength, config.rules.maxCompletionLength);
       this.prompt = Utils.sensibleCut(this.gptsCompletion, config.rules.minPromptLength, config.rules.maxPromptLength);
-      console.log(`The chosen prompt is:${this.prompt}`);
+      
     } while (this.prompt == "" || this.gptsCompletion == "");
+
+    console.log(`The chosen prompt is:${this.prompt}`);
   }
 
 
