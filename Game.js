@@ -195,6 +195,7 @@ class Game
     let voteCount = {right:0, wrong:0};
     
     this.humanVotes.forEach((emoji, userId) => {
+      if(userId === this.mimic.id) return; //Don't count the mimic's vote
       if(emoji === (this.aIsMimic ? '🅰' : '🅱'))
       {
         voteCount.right += 1;
