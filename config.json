@@ -1,0 +1,9 @@
+{
+  "datasetsFolder": "datasets",
+  "rules": {
+    "minCompletionLength": 300,
+    "maxCompletionLength": 400,
+    "minPromptLength": 30,
+    "maxPromptLength": 140
+  }
+}

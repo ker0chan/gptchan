@@ -1,0 +1,3 @@
+# An empty .gitignore lets us commit this folder, even if it's empty.
+*
+!.gitignore

@@ -1,6 +1,9 @@
 const lineByLine = require('n-readlines');
 const Utils = require('./utils.js');
 const GameState = require('./GameState');
+const config = require('./config.json');
+var fs = require('fs');
+var path = require('path');
 
 class Game
 {
@@ -61,20 +64,44 @@ class Game
 
   choosePrompt()
   {
+
+    let dataset = '';
+
+    //Find all the files in the datasets folder that have extension .jsonl, and get their name
+    let list = 
+    fs.readdirSync(`${__dirname}/${config.datasetsFolder}`, {withFileTypes: true})
+    .filter(f=>f.name.substring(f.name.length - 6) === '.jsonl')
+    .map(f=>f.name);
+
+    if(list.length > 0)
+    {
+      //Pick one at random
+      let randomFile = list[Math.floor(Math.random() * list.length)];
+
+      dataset = `./${config.datasetsFolder}/${randomFile}`;
+      console.log(`Picking a prompt from ${dataset}...`);
+    } else  {
+      this.channel.send(`Hmmm... I can't find a good prompt. Sorry, this game is cancelled.`);
+      this.state = GameState.GameOver;
+      console.log(`No usable dataset was found in ./${config.datasetsFolder}`);
+      return;
+    }
+
     do
     {
-      //TODO: Improve this. Splitting the file into smaller chunks may help?
+      let chosenPromptIndex = Math.floor(Math.random() * 5000);
 
-      let chosenPromptIndex = Math.floor(Math.random() * /* 250000 */ 5000);
+      //Read the file, line by line
+      const liner = new lineByLine(dataset);
 
-      const liner = new lineByLine('./small-117M-k40.train.jsonl');
-
+      //Fast forward through the file...
       for(let i = 0; i < chosenPromptIndex; i++) { liner.next(); }
+
       let line = JSON.parse(liner.next().toString('ascii'));
       let fullText = line.text;
       console.log(`Trying ${line.id} (on line ${chosenPromptIndex}): "${line.text.substring(0, 40)}..."`);
-      this.gptsCompletion = Utils.sensibleCut(fullText, 300, 400);
-      this.prompt = Utils.sensibleCut(this.gptsCompletion, 30, 140);
+      this.gptsCompletion = Utils.sensibleCut(fullText, config.rules.minCompletionLength, config.rules.maxCompletionLength);
+      this.prompt = Utils.sensibleCut(this.gptsCompletion, config.rules.minPromptLength, config.rules.maxPromptLength);
       console.log(`The chosen prompt is:${this.prompt}`);
     } while (this.prompt == "" || this.gptsCompletion == "");
   }
@@ -98,12 +125,12 @@ class Game
       msg.reply("Your message doesn't start with the prompt.");
       return false;
     }
-    if (msg.content.length < 300) {
-      msg.reply(`Your completion should be at least 300 characters; it's only ${msg.content.length}.`);
+    if (msg.content.length < config.rules.minCompletionLength) {
+      msg.reply(`Your completion should be at least ${config.rules.minCompletionLength} characters; it's only ${msg.content.length}.`);
       return false;
     }
-    if (msg.content.length > 400) {
-      msg.reply(`Your completion should be at most 400 characters; it's a whopping ${msg.content.length}.`);
+    if (msg.content.length > config.rules.maxCompletionLength) {
+      msg.reply(`Your completion should be at most ${config.rules.maxCompletionLength} characters; it's a whopping ${msg.content.length}.`);
       return false;
     }
     

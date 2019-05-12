@@ -6,12 +6,6 @@ require('dotenv').config()
 
 var currentGame = null;
 
-//This is the big set:
-//https://storage.googleapis.com/gpt-2/output-dataset/v1/xl-1542M-k40.train.jsonl
-//And this is the small one:
-//https://storage.googleapis.com/gpt-2/output-dataset/v1/small-117M-k40.train.jsonl
-//they're huge. Even the small one for some reason?? Confusing uh
-
 client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`);
 });
@@ -41,7 +35,7 @@ client.on('messageReactionAdd', (reaction, user) => {
     //Don't count the bot's own votes.
     return;
   }
-  
+
   const emoji = reaction.emoji.toString();
   if (emoji === '🅰' || emoji === '🅱') {
     currentGame.registerHumanVote(user, emoji);

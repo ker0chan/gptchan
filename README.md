@@ -10,7 +10,9 @@ Run `npm install`.
 
 Store a `BOT_TOKEN` from your Discord dashboard in a .env file, in the root directory.
 
-Retrieve one of the [output samples](https://github.com/openai/gpt-2-output-dataset) of GPT-2, put it in the root directory, and point Game::choosePrompt() to it.
+Retrieve one of the [output samples](https://github.com/openai/gpt-2-output-dataset) of GPT-2, put it in the `datasets` folder. You can use multiple samples, and one of them will be picked at random at the start of every game. The validation samples are big enough (5000 entries) and not too heavy (~15Mb), making them ideal for this bot.
+
+You can edit the default rules (regarding, for example, the minimum and maximum length of the prompts and completions) in `config.json`.
 
 Run `node server.js` to start the bot.
 
